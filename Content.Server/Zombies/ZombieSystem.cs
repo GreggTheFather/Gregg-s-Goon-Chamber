@@ -30,7 +30,6 @@
 
 using System.Linq;
 using Content.Server.Actions;
-using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Server.Chat;
 using Content.Server.Chat.Systems;
@@ -49,7 +48,6 @@ using Content.Shared.NameModifier.EntitySystems;
 using Content.Shared.Popups;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Zombies;
-using Content.Shared.Silicon.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -158,11 +156,10 @@ namespace Content.Server.Zombies
 
                 comp.NextTick = curTime;
 
-                // if (_mobState.IsDead(uid, mobState))
-                //     continue;
+                if (_mobState.IsDead(uid, mobState))
+                    continue;
 
-                // Den - zombies can get up when dead
-                var multiplier = (_mobState.IsCritical(uid, mobState) || _mobState.IsDead(uid, mobState))
+                var multiplier = _mobState.IsCritical(uid, mobState)
                     ? comp.PassiveHealingCritMultiplier
                     : 1f;
 
@@ -215,12 +212,6 @@ namespace Content.Server.Zombies
 
                 // Stop random groaning
                 _autoEmote.RemoveEmote(uid, "ZombieGroan");
-
-                // Handle death infection spread
-                if (args.NewMobState == MobState.Dead)
-                {
-                    _zombieTumor.HandleZombieDeathInfection(uid);
-                }
             }
         }
 
@@ -277,33 +268,13 @@ namespace Content.Server.Zombies
                 {
                     if (!HasComp<ZombieImmuneComponent>(entity) && !HasComp<NonSpreaderZombieComponent>(args.User) && _random.Prob(GetZombieInfectionChance(entity, component)))
                     {
-                        // For alive (non-crit, non-dead) players, give them zombie tumor infection
-                        // Crit/dead players will be zombified immediately in the block below
-                        if (mobState.CurrentState == MobState.Alive)
-                        {
-                            // Bite infections immediately skip to stage 2 (TumorFormed)
-                            _zombieTumor.InfectEntity(entity, ZombieTumorInfectionStage.TumorFormed);
-                        }
-                        else
-                        {
-                            // For crit/dead players, keep the old behavior
-                            EnsureComp<PendingZombieComponent>(entity);
-                            EnsureComp<ZombifyOnDeathComponent>(entity);
-                        }
+                        EnsureComp<PendingZombieComponent>(entity);
+                        EnsureComp<ZombifyOnDeathComponent>(entity);
                     }
                 }
 
                 if (_mobState.IsIncapacitated(entity, mobState) && !HasComp<ZombieComponent>(entity) && !HasComp<ZombieImmuneComponent>(entity))
                 {
-                    // Check if this is a critical IPC (has Silicon component AND Bloodstream, is in critical state)
-                    if (_mobState.IsCritical(entity, mobState) &&
-                        HasComp<SiliconComponent>(entity) &&
-                        HasComp<BloodstreamComponent>(entity))
-                    {
-                        // Give IPC a robot tumor before zombifying
-                        _zombieTumor.SpawnTumorOrgan(entity);
-                    }
-
                     ZombifyEntity(entity);
                     args.BonusDamage = -args.BaseDamage;
                 }

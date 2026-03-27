@@ -15,7 +15,6 @@
 # SPDX-FileCopyrightText: 2024 FoxxoTrystan
 # SPDX-FileCopyrightText: 2024 VMSolidus
 # SPDX-FileCopyrightText: 2025 Skubman
-# SPDX-FileCopyrightText: 2025 Terkala
 # SPDX-FileCopyrightText: 2025 sleepyyapril
 #
 # SPDX-License-Identifier: MIT AND AGPL-3.0-or-later
@@ -82,7 +81,3 @@
 - type: metabolizerType
   id: Plasmaman
   name: metabolizer-type-plasmaman
-
-- type: metabolizerType
-  id: ZombieTumor
-  name: metabolizer-type-zombie-tumor

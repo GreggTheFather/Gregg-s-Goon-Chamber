@@ -3,6 +3,7 @@
 # SPDX-FileCopyrightText: 2025 Skubman
 # SPDX-FileCopyrightText: 2025 Terkala
 # SPDX-FileCopyrightText: 2025 sleepyyapril
+# SPDX-FileCopyrightText: 2026 Jakumba
 #
 # SPDX-License-Identifier: MIT AND AGPL-3.0-or-later
 
@@ -21,4 +22,3 @@ metabolizer-type-vampiric = Vampiric
 metabolizer-type-liquorlifeline = Liquor Lifeline
 metabolizer-type-shadowkin = Shadowkin
 metabolizer-type-plasmaman = Plasmaman
-metabolizer-type-zombie-tumor = Zombie Tumor
